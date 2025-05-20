@@ -6,13 +6,14 @@ CONTAINER_DB = odoo_development-odoo-postgres-1
 
 help:
 	@echo "Available targets:"
-	@echo "  start        - Start Odoo and DB containers"
-	@echo "  stop         - Stop and remove containers"
-	@echo "  restart      - Restart containers"
-	@echo "  console      - Enter Odoo container shell"
-	@echo "  psql         - Enter Postgres psql prompt"
-	@echo "  logs-odoo    - View Odoo logs"
-	@echo "  logs-db      - View Postgres logs"
+	@echo "  start        		- Start Odoo and DB containers"
+	@echo "  stop         		- Stop and remove containers"
+	@echo "  restart      		- Restart containers"
+	@echo "  console      		- Enter Odoo container shell"
+	@echo "  psql         		- Enter Postgres psql prompt"
+	@echo "  logs-odoo    		- View Odoo logs"
+	@echo "  logs-db      		- View Postgres logs"
+	@echo "  addon <addon_name> - Restart Instance and Upgrade Addons"
 
 start:
 	$(DOCKER) compose up -d
@@ -42,4 +43,13 @@ endef
 logs:
 	$(call log_target,$(word 2, $(MAKECMDGOALS)))
 
-.PHONY : start stop restart console psql logs odoo db
+define upgrade_addon
+	$(DOCKER) exec -it $(CONTAINER_ODOO) odoo --db_host=$(CONTAINER_DB) \
+	-d $(WEB_DB_NAME) -r $(CONTAINER_ODOO) -w $(CONTAINER_ODOO) -u $(1)
+endef
+
+addon:restart
+	$(call upgrade_addon,$(word 2,$(MAKECMDGOALS)))
+
+
+.PHONY : start stop restart console psql logs odoo db addon
