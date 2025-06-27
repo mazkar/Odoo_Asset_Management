@@ -1,0 +1,70 @@
+<odoo>
+    <!-- Tree View for x_asset.item -->
+    <record id="view_x_asset_item_tree" model="ir.ui.view">
+        <field name="name">x_asset.item.tree</field>
+        <field name="model">x_asset.item</field>
+       <field name="arch" type="xml">
+            <tree string="Asset Item Tree">
+                <field name="name" width="30%"/>
+                <field name="onHandQuantity" width="15%"/>
+                <field name="note" width="55%"/>
+            </tree>
+        </field>
+
+    </record>
+
+    <!-- Form View for x_asset.item -->
+    <record id="view_x_asset_item_form" model="ir.ui.view">
+        <field name="name">x_asset.item.form</field>
+        <field name="model">x_asset.item</field>
+        <field name="arch" type="xml">
+           <form string="Asset Item Form">
+                <sheet>
+                  
+                     <div class="oe_title"> 
+                         <h1> 
+                              <field name="name"/>
+                         </h1>
+                     </div>
+                      
+                
+
+                    <notebook>
+                        <page string="Detail">
+                            <group>
+                                <field name="onHandQuantity"/>
+                                 <field name="note"/>
+                            </group>
+                        </page>
+                        <page string="History Inspection">
+                            <field name="condition_month_ids" readonly="1">
+                                <tree string="History Inspection">
+                                    <field name="tanggal"/>
+                                    <field name="bulan_tahun"/>
+                                    <field name="jumlah"/>
+                                    <field name="kondisi_baik"/>
+                                    <field name="kondisi_rusak"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                    </notebook>
+                </sheet>
+            </form>
+
+        </field>
+    </record>
+
+    <!-- Window Action for x_asset.item -->
+    <record id="action_x_asset_item" model="ir.actions.act_window">
+        <field name="name">Asset Items</field>
+        <field name="res_model">x_asset.item</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_x_asset_item_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new asset item!
+            </p>
+        </field>
+    </record>
+</odoo>

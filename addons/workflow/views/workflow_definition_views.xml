@@ -1,0 +1,35 @@
+<odoo>
+    <record id="view_asset_workflow_definition_tree" model="ir.ui.view">
+        <field name="name">asset.workflow.definition.tree</field>
+        <field name="model">asset.workflow.definition</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="sequence"/>
+                <field name="workflow_id"/>
+                <field name="group_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_asset_workflow_definition_form" model="ir.ui.view">
+        <field name="name">asset.workflow.definition.form</field>
+        <field name="model">asset.workflow.definition</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="name"/>
+                    <field name="sequence"/>
+                    <field name="workflow_id"/>
+                    <field name="group_id"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_workflow_definition" model="ir.actions.act_window">
+        <field name="name">Workflow Definitions</field>
+        <field name="res_model">asset.workflow.definition</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

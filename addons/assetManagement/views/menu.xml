@@ -1,0 +1,8 @@
+<odoo>
+    <menuitem id="asset_root_menu" name="Asset Management" sequence="10"/>
+
+    <menuitem id="asset_item_menu" name="Items" parent="asset_root_menu"
+              action="action_x_asset_item" sequence="20"/>
+     <menuitem id="asset_condition_menu" name="Monthly Inspections" parent="asset_root_menu"
+              action="action_x_asset_condition_month" sequence="30"/> 
+</odoo>

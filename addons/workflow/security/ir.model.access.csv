@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_asset_workflow_user,access.asset.workflow.user,model_asset_workflow,base.group_user,1,1,1,0
+access_asset_workflow_definition_user,access.asset.workflow.definition.user,model_asset_workflow_definition,base.group_user,1,1,1,0
