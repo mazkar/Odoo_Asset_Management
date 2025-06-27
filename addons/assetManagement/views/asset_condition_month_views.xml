@@ -41,6 +41,7 @@
                         <field name="jumlah" readonly="1"/>
                         <field name="kondisi_baik"/>
                         <field name="kondisi_rusak"/>
+                        <field name="keterangan"/>
                     </group> 
                   </page>   
                  </notebook>

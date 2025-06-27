@@ -21,7 +21,7 @@ class AssetConditionMonth(models.Model):
     jumlah = fields.Integer(string='Jumlah', readonly=True)
     kondisi_baik = fields.Integer(string='Kondisi Baik')
     kondisi_rusak = fields.Integer(string='Kondisi Rusak')
-    justification = fields.Text(string='Justifikasi')
+    keterangan = fields.Text(string='Keterangan')
     bulan_tahun = fields.Char(string='Bulan - Tahun', compute='_compute_bulan_tahun', store=True)
     inspect_by = fields.Many2one('res.users', string='Inspected By', readonly=True)
 
