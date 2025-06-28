@@ -6,6 +6,7 @@
     'category': 'Assets',
     'depends': ['base','mail'],
     'data': [
+        'views/user_group_views.xml',
         'security/asset_model_records.xml',  # Contains ir.model records
         'security/ir.model.access.csv',      # Access rights (if you have them)
         'views/asset_item_views.xml',        # Views for asset.item

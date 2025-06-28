@@ -19,20 +19,30 @@
     <field name="arch" type="xml">
       <form string="Monthly Condition Form">
         <header>
-          <button name="action_submit" type="object" string="Submit"
+          <button name="action_submit"
+                  string="Submit"
+                  type="object"
                   class="btn-primary"
-                  modifiers="{'invisible': [['state', '!=', 'draft']]}"/>
+                  oe_visibility="show_submit"
+                  depends="show_submit"/>
 
-          <button name="action_approve" type="object" string="Approve"
+          <button name="action_approve"
+                  string="Approve"
+                  type="object"
                   class="btn-success"
-                  modifiers="{'invisible': [['state', '!=', 'on_approval']]}"/>
+                  oe_visibility="show_approve"
+                  depends="show_approve"/>
 
-          <button name="action_reject" type="object" string="Reject"
+          <button name="action_reject"
+                  string="Reject"
+                  type="object"
                   class="btn-danger"
-                  modifiers="{'invisible': [['state', '!=', 'on_approval']]}"/>
+                  oe_visibility="show_reject"
+                  depends="show_reject"/>
 
           <field name="state" widget="statusbar"
-                 statusbar_visible="draft,on_approval,approved,rejected"/>
+                 statusbar_visible="draft,on_approval,approved,rejected"
+                 statusbar_colors='{"draft":"blue", "on_approval":"orange", "approved":"green", "rejected":"red"}'/>
         </header>
 
         <sheet>
@@ -51,6 +61,12 @@
           <group string="Approval">
             <field name="approval_route_ids" widget="many2many_tags"/>
             <field name="current_approval_index"/>
+          </group>
+
+          <group string="DEBUG (Remove in production)">
+            <field name="show_submit"/>
+            <field name="show_approve"/>
+            <field name="show_reject"/>
           </group>
         </sheet>
       </form>

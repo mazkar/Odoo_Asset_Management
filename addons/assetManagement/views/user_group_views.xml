@@ -1,0 +1,39 @@
+<odoo>
+  <record id="view_user_group_form" model="ir.ui.view">
+    <field name="name">res.groups.form.asset</field>
+    <field name="model">res.groups</field>
+    <field name="arch" type="xml">
+      <form string="User Group">
+        <sheet>
+          <group>
+            <field name="name"/>
+            <field name="category_id" context="{'default_name': 'Asset Management'}"/>
+            <field name="users" widget="many2many_tags"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_user_group_tree" model="ir.ui.view">
+    <field name="name">res.groups.tree.asset</field>
+    <field name="model">res.groups</field>
+    <field name="arch" type="xml">
+      <tree>
+        <field name="name"/>
+        <field name="category_id"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="action_user_group_asset" model="ir.actions.act_window">
+    <field name="name">User Group Settings</field>
+    <field name="res_model">res.groups</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[('category_id.name','=','Asset Management')]</field>
+  </record>
+
+  <menuitem id="menu_asset_setting_root" name="Settings" parent="asset_root_menu" sequence="50"/>
+  <menuitem id="menu_asset_user_group" name="User Group Settings"
+            action="action_user_group_asset" parent="menu_asset_setting_root" sequence="10"/>
+</odoo>
