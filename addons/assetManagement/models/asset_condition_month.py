@@ -42,15 +42,18 @@ class AssetConditionMonth(models.Model):
                 record.jumlah = 0
 
     @api.constrains('kondisi_baik', 'kondisi_rusak', 'jumlah')
-    def _check_kondisi_total(self):
-        for record in self:
-            total = (record.kondisi_baik or 0) + (record.kondisi_rusak or 0)
-            _logger.debug(
-                "[CHECK] kondisi_baik=%s, kondisi_rusak=%s, jumlah=%s",
-                record.kondisi_baik, record.kondisi_rusak, record.jumlah
-            )
-            if total != record.jumlah:
-                raise ValidationError("Jumlah kondisi baik + rusak harus sama dengan total jumlah aset.")
+    def action_submit(self):
+        for rec in self:
+            total = (rec.kondisi_baik or 0) + (rec.kondisi_rusak or 0)
+            if total != rec.jumlah:
+                # Tambahkan warning via chatter (log note)
+                rec.message_post(
+                    body="⚠️ Jumlah kondisi tidak sesuai dengan jumlah aset. Proses akan masuk ke approval."
+                )
+                rec.state = 'on_approval'
+                rec.current_approval_index = 0
+            else:
+                rec.state = 'approved'
 
     @api.model
     def create(self, vals):
@@ -71,3 +74,55 @@ class AssetConditionMonth(models.Model):
             item = self.env['x_asset.item'].browse(vals['item_id'])
             vals['jumlah'] = item.onHandQuantity
         return super().write(vals)
+
+
+    approval_route_ids = fields.Many2many('approval.route.line', string='Approval Routes')
+    current_approval_index = fields.Integer(string='Current Approval Index', default=0)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('on_approval', 'On Approval'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected')
+    ], string='Status', default='draft', tracking=True)
+
+    def action_submit(self):
+        for rec in self:
+            rec.state = 'on_approval'
+            rec.current_approval_index = 0
+
+    def action_approve(self):
+        for rec in self:
+            if rec.state != 'on_approval':
+                raise ValidationError("Record is not under approval.")
+            route_lines = sorted(rec.approval_route_ids, key=lambda x: x.sequence)
+            if rec.current_approval_index >= len(route_lines):
+                raise ValidationError("No more approval steps.")
+
+            current_route = route_lines[rec.current_approval_index]
+            group = current_route.group_id
+
+            # Cari external ID dari group
+            group_ext_id = group.get_external_id().get(group.id)
+            if not group_ext_id:
+                raise ValidationError(f"Group {group.name} doesn't have an external ID defined.")
+
+            if not self.env.user.has_group(group_ext_id):
+                raise ValidationError("You are not authorized to approve this step.")
+
+            rec.current_approval_index += 1
+            if rec.current_approval_index == len(route_lines):
+                rec.state = 'approved'
+
+    def action_reject(self):
+        for rec in self:
+            rec.state = 'rejected'
+
+
+    def _show_submit_button(self):
+            return self.state == 'draft'
+
+    def _show_approve_button(self):
+            return self.state == 'on_approval'
+
+    def _show_reject_button(self):
+            return self.state == 'on_approval'
