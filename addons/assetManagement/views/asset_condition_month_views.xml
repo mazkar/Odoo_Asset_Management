@@ -24,21 +24,24 @@
                   type="object"
                   class="btn-primary"
                   oe_visibility="show_submit"
-                  depends="show_submit"/>
+                  depends="show_submit"
+                 modifiers="{'invisible': [['state', '!=', 'On Approval']]}"/>
 
           <button name="action_approve"
                   string="Approve"
                   type="object"
                   class="btn-success"
                   oe_visibility="show_approve"
-                  depends="show_approve"/>
+                  depends="show_approve"
+                  modifiers="{'invisible': [['state', '!=', 'On Approval']]}"/>
 
           <button name="action_reject"
                   string="Reject"
                   type="object"
                   class="btn-danger"
                   oe_visibility="show_reject"
-                  depends="show_reject"/>
+                  depends="show_reject"
+                  modifiers="{'invisible': [['state', '!=', 'On Approval']]}"/>
 
           <field name="state" widget="statusbar"
                  statusbar_visible="draft,on_approval,approved,rejected"
