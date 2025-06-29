@@ -1,39 +1,53 @@
 <odoo>
-  <record id="view_user_group_form" model="ir.ui.view">
-    <field name="name">res.groups.form.asset</field>
+  <!-- Optional: tetap boleh simpan kategori kalau ingin assign cepat -->
+  <record id="module_category_asset_management" model="ir.module.category">
+    <field name="name">Asset Management</field>
+    <field name="description">User Groups related to asset features</field>
+    <field name="sequence">10</field>
+  </record>
+
+  <!-- Tree View: tampilkan semua group -->
+  <record id="view_user_group_tree_custom" model="ir.ui.view">
+    <field name="name">res.groups.tree.custom</field>
+    <field name="model">res.groups</field>
+    <field name="arch" type="xml">
+      <tree string="All User Groups">
+        <field name="name"/>
+        <field name="category_id"/>
+        <field name="users"/>
+      </tree>
+    </field>
+  </record>
+
+  <!-- Form View -->
+  <record id="view_user_group_form_custom" model="ir.ui.view">
+    <field name="name">res.groups.form.custom</field>
     <field name="model">res.groups</field>
     <field name="arch" type="xml">
       <form string="User Group">
         <sheet>
           <group>
             <field name="name"/>
-            <field name="category_id" context="{'default_name': 'Asset Management'}"/>
-            <field name="users" widget="many2many_tags"/>
+            <field name="category_id"/>
+            <field name="users" widget="many2many_tags" options="{'no_create': True}"/>
           </group>
         </sheet>
       </form>
     </field>
   </record>
 
-  <record id="view_user_group_tree" model="ir.ui.view">
-    <field name="name">res.groups.tree.asset</field>
-    <field name="model">res.groups</field>
-    <field name="arch" type="xml">
-      <tree>
-        <field name="name"/>
-        <field name="category_id"/>
-      </tree>
-    </field>
-  </record>
-
-  <record id="action_user_group_asset" model="ir.actions.act_window">
+  <!-- Action Window: tampilkan semua grup -->
+  <record id="action_user_group_custom" model="ir.actions.act_window">
     <field name="name">User Group Settings</field>
     <field name="res_model">res.groups</field>
     <field name="view_mode">tree,form</field>
-    <field name="domain">[('category_id.name','=','Asset Management')]</field>
+    <field name="view_id" ref="view_user_group_tree_custom"/>
+    <field name="context">{}</field>
   </record>
 
+  <!-- Menu -->
   <menuitem id="menu_asset_setting_root" name="Settings" parent="asset_root_menu" sequence="50"/>
   <menuitem id="menu_asset_user_group" name="User Group Settings"
-            action="action_user_group_asset" parent="menu_asset_setting_root" sequence="10"/>
+            action="action_user_group_custom"
+            parent="menu_asset_setting_root" sequence="10"/>
 </odoo>

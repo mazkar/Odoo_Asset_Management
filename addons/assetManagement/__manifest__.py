@@ -8,6 +8,8 @@
     'data': [
         'views/menu.xml',    
         'views/user_group_views.xml',
+        'data/module_category.xml',
+        'data/approval_group_and_route.xml',
         'security/asset_model_records.xml',  # Contains ir.model records
         'security/ir.model.access.csv',      # Access rights (if you have them)
         'views/asset_item_views.xml',        # Views for asset.item

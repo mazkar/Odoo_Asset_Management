@@ -7,7 +7,11 @@
       <tree>
         <field name="item_id"/>
         <field name="tanggal"/>
-        <field name="state"/>
+        
+                <field name="approver_user_ids" widget="many2many_tags" readonly="1"/>
+                <field name="approved_user_ids" widget="many2many_tags" readonly="1"/>
+    
+                <field name="state"/>
       </tree>
     </field>
   </record>
@@ -43,7 +47,11 @@
                   depends="show_reject"
                   modifiers="{'invisible': [['state', '!=', 'On Approval']]}"/>
 
-          <field name="state" widget="statusbar"
+          
+                <field name="approver_user_ids" widget="many2many_tags" readonly="1"/>
+                <field name="approved_user_ids" widget="many2many_tags" readonly="1"/>
+    
+                <field name="state" widget="statusbar"
                  statusbar_visible="draft,on_approval,approved,rejected"
                  statusbar_colors='{"draft":"blue", "on_approval":"orange", "approved":"green", "rejected":"red"}'/>
         </header>
@@ -58,19 +66,23 @@
             <field name="kondisi_rusak"/>
             <field name="keterangan"/>
             <field name="inspect_by" readonly="1"/>
-            <field name="state" widget="badge"/>
+            
+                <field name="approver_user_ids" widget="many2many_tags" readonly="1"/>
+                <field name="approved_user_ids" widget="many2many_tags" readonly="1"/>
+    
+                <field name="state" widget="badge"/>
           </group>
 
           <group string="Approval">
             <field name="approval_route_ids" widget="many2many_tags"/>
-            <field name="current_approval_index"/>
+            <!-- <field name="current_approval_index"/> -->
           </group>
 
-          <group string="DEBUG (Remove in production)">
+          <!-- <group string="DEBUG (Remove in production)">
             <field name="show_submit"/>
             <field name="show_approve"/>
             <field name="show_reject"/>
-          </group>
+          </group> -->
         </sheet>
       </form>
     </field>

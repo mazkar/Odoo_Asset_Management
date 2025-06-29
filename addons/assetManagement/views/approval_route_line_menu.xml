@@ -1,19 +1,20 @@
-
 <odoo>
+  <!-- Action -->
   <record id="action_approval_route_line" model="ir.actions.act_window">
     <field name="name">Approval Routes</field>
     <field name="res_model">approval.route.line</field>
     <field name="view_mode">tree,form</field>
     <field name="help" type="html">
-      <p>Define the approval route sequence with user groups here.</p>
+      <p class="o_view_nocontent_smiling_face">
+        Buat urutan persetujuan berdasarkan group pengguna.
+      </p>
     </field>
   </record>
 
-  <menuitem id="menu_approval_root" name="Asset Approval" sequence="20"/>
-
-  <menuitem id="menu_approval_route_line"
+  <!-- Menu -->
+  <menuitem id="menu_approval_route_root"
             name="Approval Routes"
-            parent="menu_approval_root"
+            parent="asset_root_menu"
             action="action_approval_route_line"
-            sequence="10"/>
+            sequence="30"/>
 </odoo>
