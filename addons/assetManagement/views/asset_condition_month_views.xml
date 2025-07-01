@@ -54,7 +54,7 @@
             <page string="Detail Inspeksi">
               <field name="line_ids">
                 <tree editable="bottom">
-                  <field name="sequence" readonly="1"/>
+                  <!-- <field name="sequence" readonly="1"/> -->
                   <field name="lokasi_nama"/>
                   <field name="asset_id" string="Nama Barang" readonly="1"/>
                   <field name="kondisi_baik"/>

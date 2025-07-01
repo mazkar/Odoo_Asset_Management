@@ -16,7 +16,8 @@
         'security/ir.model.access.csv',      # Access rights (if you have them)
         'views/asset_item_views.xml',        # Views for asset.item
         'views/asset_condition_month_views.xml', # Views for asset.condition.month
-                       # Menu items
+        'views/asset_condition_month_report_menu.xml',
+        'report/asset_condition_month_report.xml',
     ],
     'application': True,
 }

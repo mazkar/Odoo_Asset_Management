@@ -16,13 +16,6 @@ class AssetConditionMonth(models.Model):
         string='Detail Inspeksi'
     )
 
-    item_id = fields.Many2one(
-        'x_asset.item',
-        string='Item Aset',
-        required=True,
-        ondelete='cascade',
-        domain="[('onHandQuantity', '>', 0)]"
-    )
     tanggal = fields.Date(string='Tanggal', required=True)
     jumlah = fields.Integer(string='Jumlah', readonly=True)
     kondisi_baik = fields.Integer(string='Kondisi Baik')
@@ -84,33 +77,47 @@ class AssetConditionMonth(models.Model):
                 users |= group_users
             rec.approver_user_ids = [(6, 0, users.ids)]
 
-    # === ONCHANGE ===
-
-    @api.onchange('item_id')
-    def _onchange_item_id(self):
-        for record in self:
-            if record.item_id:
-                record.jumlah = record.item_id.onHandQuantity
-            else:
-                record.jumlah = 0
-
     # === CREATE/WRITE ===
+
+    def write(self, vals):
+        return super().write(vals)
 
     @api.model
     def create(self, vals):
-        if not vals.get('inspect_by'):
-            vals['inspect_by'] = self.env.uid
-        if 'jumlah' not in vals and vals.get('item_id'):
-            item = self.env['x_asset.item'].browse(vals['item_id'])
-            vals['jumlah'] = item.onHandQuantity
+        # Ambil semua item
+        items = self.env['x_asset.item'].search([])
+
+        # Buat line_ids langsung di vals
+        line_vals = []
+        for item in items:
+            line_vals.append((0, 0, {
+                'item_id': item.id,
+                'jumlah': item.onHandQuantity,
+                'kondisi_baik': 0,
+                'kondisi_rusak': 0,
+            }))
+        vals['line_ids'] = line_vals
+
         return super().create(vals)
+    
+    @api.model
+    def default_get(self, fields):
+        defaults = super().default_get(fields)
+        items = self.env['x_asset.item'].search([])
 
-    def write(self, vals):
-        if 'item_id' in vals:
-            item = self.env['x_asset.item'].browse(vals['item_id'])
-            vals['jumlah'] = item.onHandQuantity
-        return super().write(vals)
+        line_vals = []
+        for item in items:
+            if item:
+                line_vals.append((0, 0, {
+                    'item_id': item.id,
+                    'jumlah': item.onHandQuantity,
+                    'kondisi_baik': 0,
+                    'kondisi_rusak': 0,
+                }))
+        if line_vals:
+            defaults['line_ids'] = line_vals
 
+        return defaults
     # === ACTIONS ===
 
     def action_submit(self):

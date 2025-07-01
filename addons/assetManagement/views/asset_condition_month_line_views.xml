@@ -6,7 +6,7 @@
       <form string="Monthly Asset Inspection">
         <sheet>
           <group>
-            <field name="tanggal"/>
+            <!-- <field name="tanggal"/> -->
             <field name="bulan_tahun" readonly="1"/>
             <field name="inspect_by" readonly="1"/>
             <field name="state" widget="statusbar"
@@ -18,7 +18,7 @@
             <page string="Detail Inspeksi">
               <field name="line_ids">
                 <tree editable="bottom">
-                  <field name="sequence" readonly="1"/>
+          
                   <field name="lokasi_nama" readonly="1"/>
                   <field name="asset_id" string="Nama Barang" readonly="1"/>
                   <field name="kondisi_baik"/>
