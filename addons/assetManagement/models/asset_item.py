@@ -7,7 +7,9 @@ class AssetItem(models.Model):
 
     name = fields.Char(string='Nama Aset')
     onHandQuantity = fields.Integer(string='On Hand Quantity', default=0)
-    note = fields.Char(string='Note',default='-')
+    note = fields.Char(string='Note', default='-')
+    location_id = fields.Many2one('stock.location', string="Lokasi", domain="[('usage','=','internal')]")
+
     condition_month_ids = fields.One2many(
         'x_asset.condition.month',
         'item_id',
@@ -16,5 +18,4 @@ class AssetItem(models.Model):
 
     def action_custom_route(self):
         for record in self:
-            # Misalnya kita hanya ingin tampilkan pesan
             raise UserError(f"Aksi dijalankan untuk aset: {record.name}")

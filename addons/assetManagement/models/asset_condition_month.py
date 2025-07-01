@@ -9,6 +9,13 @@ class AssetConditionMonth(models.Model):
     _description = 'Kondisi Bulanan Aset'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
+    # RELASI KE LINE
+    line_ids = fields.One2many(
+        'x_asset.condition.month.line',
+        'month_id',
+        string='Detail Inspeksi'
+    )
+
     item_id = fields.Many2one(
         'x_asset.item',
         string='Item Aset',
@@ -54,6 +61,8 @@ class AssetConditionMonth(models.Model):
     show_approve = fields.Boolean(compute='_compute_button_visibility', store=True)
     show_reject = fields.Boolean(compute='_compute_button_visibility', store=True)
 
+    # === COMPUTE ===
+
     @api.depends('state')
     def _compute_button_visibility(self):
         for rec in self:
@@ -75,6 +84,8 @@ class AssetConditionMonth(models.Model):
                 users |= group_users
             rec.approver_user_ids = [(6, 0, users.ids)]
 
+    # === ONCHANGE ===
+
     @api.onchange('item_id')
     def _onchange_item_id(self):
         for record in self:
@@ -82,6 +93,8 @@ class AssetConditionMonth(models.Model):
                 record.jumlah = record.item_id.onHandQuantity
             else:
                 record.jumlah = 0
+
+    # === CREATE/WRITE ===
 
     @api.model
     def create(self, vals):
@@ -97,6 +110,8 @@ class AssetConditionMonth(models.Model):
             item = self.env['x_asset.item'].browse(vals['item_id'])
             vals['jumlah'] = item.onHandQuantity
         return super().write(vals)
+
+    # === ACTIONS ===
 
     def action_submit(self):
         for rec in self:

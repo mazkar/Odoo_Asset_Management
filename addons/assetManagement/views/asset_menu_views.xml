@@ -1,0 +1,35 @@
+<odoo>
+  <!-- Actions -->
+  <record id="action_x_asset_item" model="ir.actions.act_window">
+    <field name="name">Asset Items</field>
+    <field name="res_model">x_asset.item</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+
+  <record id="action_x_asset_condition_month" model="ir.actions.act_window">
+    <field name="name">Monthly Inspections</field>
+    <field name="res_model">x_asset.condition.month</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+
+  <record id="action_approval_route_line" model="ir.actions.act_window">
+    <field name="name">Approval Routes</field>
+    <field name="res_model">approval.route.line</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+
+  <!-- Menus -->
+  <menuitem id="asset_root_menu" name="Asset Management" sequence="10"/>
+
+  <menuitem id="asset_item_menu" name="Items"
+            parent="asset_root_menu"
+            action="action_x_asset_item" sequence="20"/>
+
+  <menuitem id="asset_condition_menu" name="Monthly Inspections"
+            parent="asset_root_menu"
+            action="action_x_asset_condition_month" sequence="30"/>
+
+  <menuitem id="menu_approval_route_line" name="Approval Routes"
+            parent="asset_root_menu"
+            action="action_approval_route_line" sequence="40"/>
+</odoo>

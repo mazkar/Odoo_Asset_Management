@@ -5,13 +5,10 @@
     <field name="model">x_asset.condition.month</field>
     <field name="arch" type="xml">
       <tree>
-        <field name="item_id"/>
         <field name="tanggal"/>
-        
-                <field name="approver_user_ids" widget="many2many_tags" readonly="1"/>
-                <field name="approved_user_ids" widget="many2many_tags" readonly="1"/>
-    
-                <field name="state"/>
+        <field name="bulan_tahun"/>
+        <field name="inspect_by"/>
+        <field name="state"/>
       </tree>
     </field>
   </record>
@@ -21,68 +18,61 @@
     <field name="name">x_asset.condition.month.form</field>
     <field name="model">x_asset.condition.month</field>
     <field name="arch" type="xml">
-      <form string="Monthly Condition Form">
+      <form string="Monthly Asset Inspection">
         <header>
           <button name="action_submit"
                   string="Submit"
                   type="object"
                   class="btn-primary"
-                  oe_visibility="show_submit"
-                  depends="show_submit"
-                 modifiers="{'invisible': [['state', '!=', 'On Approval']]}"/>
+                  modifiers="{'invisible': [['state', '!=', 'draft']]}"/>
 
           <button name="action_approve"
                   string="Approve"
                   type="object"
                   class="btn-success"
-                  oe_visibility="show_approve"
-                  depends="show_approve"
-                  modifiers="{'invisible': [['state', '!=', 'On Approval']]}"/>
+                  modifiers="{'invisible': [['state', '!=', 'on_approval']]}"/>
 
           <button name="action_reject"
                   string="Reject"
                   type="object"
                   class="btn-danger"
-                  oe_visibility="show_reject"
-                  depends="show_reject"
-                  modifiers="{'invisible': [['state', '!=', 'On Approval']]}"/>
+                  modifiers="{'invisible': [['state', '!=', 'on_approval']]}"/>
 
-          
-                <field name="approver_user_ids" widget="many2many_tags" readonly="1"/>
-                <field name="approved_user_ids" widget="many2many_tags" readonly="1"/>
-    
-                <field name="state" widget="statusbar"
-                 statusbar_visible="draft,on_approval,approved,rejected"
-                 statusbar_colors='{"draft":"blue", "on_approval":"orange", "approved":"green", "rejected":"red"}'/>
+          <field name="state" widget="statusbar"
+                statusbar_visible="draft,on_approval,approved,rejected"
+                statusbar_colors="{'draft':'blue','on_approval':'orange','approved':'green','rejected':'red'}"/>
         </header>
 
         <sheet>
           <group>
-            <field name="item_id"/>
             <field name="tanggal"/>
             <field name="bulan_tahun" readonly="1"/>
-            <field name="jumlah" readonly="1"/>
-            <field name="kondisi_baik"/>
-            <field name="kondisi_rusak"/>
-            <field name="keterangan"/>
             <field name="inspect_by" readonly="1"/>
-            
+          </group>
+
+          <notebook>
+            <page string="Detail Inspeksi">
+              <field name="line_ids">
+                <tree editable="bottom">
+                  <field name="sequence" readonly="1"/>
+                  <field name="lokasi_nama"/>
+                  <field name="asset_id" string="Nama Barang" readonly="1"/>
+                  <field name="kondisi_baik"/>
+                  <field name="kondisi_rusak"/>
+                  <field name="jumlah" readonly="1"/>
+                </tree>
+              </field>
+            </page>
+
+            <page string="Approval">
+              <group>
+                <field name="approval_route_ids" widget="many2many_tags"/>
                 <field name="approver_user_ids" widget="many2many_tags" readonly="1"/>
                 <field name="approved_user_ids" widget="many2many_tags" readonly="1"/>
-    
                 <field name="state" widget="badge"/>
-          </group>
-
-          <group string="Approval">
-            <field name="approval_route_ids" widget="many2many_tags"/>
-            <!-- <field name="current_approval_index"/> -->
-          </group>
-
-          <!-- <group string="DEBUG (Remove in production)">
-            <field name="show_submit"/>
-            <field name="show_approve"/>
-            <field name="show_reject"/>
-          </group> -->
+              </group>
+            </page>
+          </notebook>
         </sheet>
       </form>
     </field>

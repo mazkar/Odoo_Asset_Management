@@ -4,8 +4,10 @@
     'summary': 'Aset Bulanan dan Kondisi',
     'author': 'Your Name',
     'category': 'Assets',
-    'depends': ['base','mail'],
+    'depends': ['base','mail','stock'],
     'data': [
+        'views/asset_menu_views.xml',
+        'views/asset_condition_month_line_views.xml',
         'views/menu.xml',    
         'views/user_group_views.xml',
         'data/module_category.xml',
