@@ -8,6 +8,7 @@
     'data': [
         'views/asset_menu_views.xml',
         'views/asset_condition_month_line_views.xml',
+         'views/asset_condition_month_done_views.xml', # Views for asset.condition.month.done
         'views/menu.xml',    
         'views/user_group_views.xml',
         'data/module_category.xml',
@@ -16,8 +17,7 @@
         'security/ir.model.access.csv',      # Access rights (if you have them)
         'views/asset_item_views.xml',        # Views for asset.item
         'views/asset_condition_month_views.xml', # Views for asset.condition.month
-        'views/asset_condition_month_report_menu.xml',
-        'report/asset_condition_month_report.xml',
+       
     ],
     'application': True,
 }

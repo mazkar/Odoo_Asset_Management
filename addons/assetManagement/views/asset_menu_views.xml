@@ -32,4 +32,5 @@
   <menuitem id="menu_approval_route_line" name="Approval Routes"
             parent="asset_root_menu"
             action="action_approval_route_line" sequence="40"/>
+  
 </odoo>
