@@ -1,0 +1,21 @@
+<odoo>
+  <record id="module_category_asset_management" model="ir.module.category">
+    <field name="name">Asset Management</field>
+    <field name="description">Grup dan hak akses untuk aplikasi Asset Management</field>
+    <field name="sequence">30</field>
+  </record>
+
+
+  <!-- Group: Assets Management -->
+  <record id="group_assets_management" model="res.groups">
+    <field name="name">Assets Management</field>
+    <field name="category_id" ref="base.module_category_hidden"/>
+  </record>
+
+  <!-- Approval Route Line: Step 1 -->
+  <record id="approval_route_assets_step1" model="approval.route.line">
+    <field name="name">Step 1 - Assets Management</field>
+    <field name="sequence">1</field>
+    <field name="group_id" ref="assetManagement.group_assets_management"/>
+  </record>
+</odoo>

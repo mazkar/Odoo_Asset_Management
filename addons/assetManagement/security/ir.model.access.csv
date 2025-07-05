@@ -3,3 +3,5 @@ access_x_asset_item_user,x.asset.item.user,model_x_asset_item,base.group_user,1,
 access_x_asset_condition_month_user,x.asset.condition.month.user,model_x_asset_condition_month,base.group_user,1,1,1,1
 access_approval_route_line_user,access.approval.route.line.user,model_approval_route_line,base.group_user,1,0,0,0
 access_approval_route_line_manager,access.approval.route.line.manager,model_approval_route_line,base.group_system,1,1,1,1
+access_res_groups_custom,res.groups custom,base.model_res_groups,,1,0,0,0
+access_x_asset_condition_month_line_user,x.asset.condition.month.line.user,model_x_asset_condition_month_line,base.group_user,1,1,1,1

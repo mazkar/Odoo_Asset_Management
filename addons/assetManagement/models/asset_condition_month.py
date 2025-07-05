@@ -9,13 +9,13 @@ class AssetConditionMonth(models.Model):
     _description = 'Kondisi Bulanan Aset'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    item_id = fields.Many2one(
-        'x_asset.item',
-        string='Item Aset',
-        required=True,
-        ondelete='cascade',
-        domain="[('onHandQuantity', '>', 0)]"
+    # RELASI KE LINE
+    line_ids = fields.One2many(
+        'x_asset.condition.month.line',
+        'month_id',
+        string='Detail Inspeksi'
     )
+
     tanggal = fields.Date(string='Tanggal', required=True)
     jumlah = fields.Integer(string='Jumlah', readonly=True)
     kondisi_baik = fields.Integer(string='Kondisi Baik')
@@ -30,13 +30,31 @@ class AssetConditionMonth(models.Model):
         ('draft', 'Draft'),
         ('on_approval', 'On Approval'),
         ('approved', 'Approved'),
-        ('rejected', 'Rejected')
-    ], string='Status', default='draft', tracking=True)
+        ('rejected', 'Rejected')], string='Status', default='draft', tracking=True)
 
-    # Tombol kontrol untuk oe_visibility
+    approver_user_ids = fields.Many2many(
+        'res.users',
+        'x_asset_condition_month_approver_rel',
+        'condition_id',
+        'user_id',
+        string='Approvers',
+        compute='_compute_approvers',
+        store=True
+    )
+
+    approved_user_ids = fields.Many2many(
+        'res.users',
+        'x_asset_condition_month_approved_rel',
+        'condition_id',
+        'user_id',
+        string='Approved By'
+    )
+
     show_submit = fields.Boolean(compute='_compute_button_visibility', store=True)
     show_approve = fields.Boolean(compute='_compute_button_visibility', store=True)
     show_reject = fields.Boolean(compute='_compute_button_visibility', store=True)
+
+    # === COMPUTE ===
 
     @api.depends('state')
     def _compute_button_visibility(self):
@@ -48,33 +66,59 @@ class AssetConditionMonth(models.Model):
     @api.depends('tanggal')
     def _compute_bulan_tahun(self):
         for record in self:
-            if record.tanggal:
-                record.bulan_tahun = record.tanggal.strftime('%B %Y')
-            else:
-                record.bulan_tahun = ''
+            record.bulan_tahun = record.tanggal.strftime('%B %Y') if record.tanggal else ''
 
-    @api.onchange('item_id')
-    def _onchange_item_id(self):
-        for record in self:
-            if record.item_id:
-                record.jumlah = record.item_id.onHandQuantity
-            else:
-                record.jumlah = 0
+    @api.depends('approval_route_ids')
+    def _compute_approvers(self):
+        for rec in self:
+            users = self.env['res.users']
+            for line in rec.approval_route_ids:
+                group_users = self.env['res.users'].search([('groups_id', '=', line.group_id.id)])
+                users |= group_users
+            rec.approver_user_ids = [(6, 0, users.ids)]
+
+    # === CREATE/WRITE ===
+
+    def write(self, vals):
+        return super().write(vals)
 
     @api.model
     def create(self, vals):
-        if not vals.get('inspect_by'):
-            vals['inspect_by'] = self.env.uid
-        if 'jumlah' not in vals and vals.get('item_id'):
-            item = self.env['x_asset.item'].browse(vals['item_id'])
-            vals['jumlah'] = item.onHandQuantity
-        return super().create(vals)
+        # Ambil semua item
+        items = self.env['x_asset.item'].search([])
 
-    def write(self, vals):
-        if 'item_id' in vals:
-            item = self.env['x_asset.item'].browse(vals['item_id'])
-            vals['jumlah'] = item.onHandQuantity
-        return super().write(vals)
+        # Buat line_ids langsung di vals
+        line_vals = []
+        for item in items:
+            line_vals.append((0, 0, {
+                'item_id': item.id,
+                'jumlah': item.onHandQuantity,
+                'kondisi_baik': 0,
+                'kondisi_rusak': 0,
+            }))
+        vals['line_ids'] = line_vals
+
+        return super().create(vals)
+    
+    @api.model
+    def default_get(self, fields):
+        defaults = super().default_get(fields)
+        items = self.env['x_asset.item'].search([])
+
+        line_vals = []
+        for item in items:
+            if item:
+                line_vals.append((0, 0, {
+                    'item_id': item.id,
+                    'jumlah': item.onHandQuantity,
+                    'kondisi_baik': 0,
+                    'kondisi_rusak': 0,
+                }))
+        if line_vals:
+            defaults['line_ids'] = line_vals
+
+        return defaults
+    # === ACTIONS ===
 
     def action_submit(self):
         for rec in self:
@@ -91,33 +135,26 @@ class AssetConditionMonth(models.Model):
         for rec in self:
             if rec.state != 'on_approval':
                 raise ValidationError("Record is not under approval.")
-            route_lines = sorted(rec.approval_route_ids, key=lambda x: x.sequence)
-            if rec.current_approval_index >= len(route_lines):
-                raise ValidationError("No more approval steps.")
-            current_route = route_lines[rec.current_approval_index]
-            group = current_route.group_id
-            group_ext_id = group.get_external_id().get(group.id)
-            if not group_ext_id:
-                raise ValidationError(f"Group {group.name} doesn't have an external ID defined.")
-            if not self.env.user.has_group(group_ext_id):
-                raise ValidationError("You are not authorized to approve this step.")
-            rec.current_approval_index += 1
-            if rec.current_approval_index == len(route_lines):
+
+            user = self.env.user
+            if user in rec.approved_user_ids:
+                raise ValidationError("You have already approved this record.")
+
+            rec.approved_user_ids = [(4, user.id)]
+            rec.message_post(body=f"✅ {user.name} telah menyetujui.")
+
+            if set(rec.approver_user_ids.ids).issubset(set(rec.approved_user_ids.ids)):
                 rec.state = 'approved'
+                rec.message_post(body="✅ Semua approver telah menyetujui. Status: Approved.")
+            else:
+                remaining = set(rec.approver_user_ids.ids) - set(rec.approved_user_ids.ids)
+                remaining_users = self.env['res.users'].browse(list(remaining))
+                names = ', '.join(remaining_users.mapped('name'))
+                rec.message_post(body=f"⏳ Menunggu persetujuan dari: {names}")
 
     def action_reject(self):
         for rec in self:
             if rec.state != 'on_approval':
                 raise ValidationError("Record is not under approval.")
-            route_lines = sorted(rec.approval_route_ids, key=lambda x: x.sequence)
-            if rec.current_approval_index >= len(route_lines):
-                raise ValidationError("No more approval steps.")
-            current_route = route_lines[rec.current_approval_index]
-            group = current_route.group_id
-            group_ext_id = group.get_external_id().get(group.id)
-            if not group_ext_id:
-                raise ValidationError(f"Group {group.name} doesn't have an external ID defined.")
-            if not self.env.user.has_group(group_ext_id):
-                raise ValidationError("You are not authorized to reject this step.")
             rec.state = 'rejected'
             rec.message_post(body=f"❌ Ditolak oleh {self.env.user.name}")
