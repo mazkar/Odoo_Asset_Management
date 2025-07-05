@@ -46,7 +46,7 @@
   </record>
 
   <!-- Menu -->
-  <menuitem id="menu_asset_setting_root" name="Settings" parent="asset_root_menu" sequence="50"/>
+  <menuitem id="menu_asset_setting_root" name="Settings" parent="assetManagement.asset_root_menu" sequence="50"/>
   <menuitem id="menu_asset_user_group" name="User Group Settings"
             action="action_user_group_custom"
             parent="menu_asset_setting_root" sequence="10"/>
