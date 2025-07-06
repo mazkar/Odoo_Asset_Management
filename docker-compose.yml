@@ -18,6 +18,8 @@ services:
     env_file: .env
     volumes:
       - ./var/lib/postgresql/data/pgdata:/var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432" # ← Tambahkan baris ini
     networks:
       - odoo-network
 networks:
