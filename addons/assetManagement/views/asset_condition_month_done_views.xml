@@ -31,9 +31,9 @@
             <page string="Detail Inspeksi">
               <field name="line_ids">
                 <tree editable="false">
-                  <field name="lokasi_nama" readonly="1"/>
+                  <!-- <field name="lokasi_nama" readonly="1"/>
                   <field name="asset_id" string="Nama Barang" readonly="1"/>
-                  <field name="kondisi_baik" readonly="1"/>
+                  <field name="kondisi_baik" readonly="1"/> -->
                   <field name="kondisi_rusak" readonly="1"/>
                   <field name="jumlah" readonly="1"/>
                 </tree>
