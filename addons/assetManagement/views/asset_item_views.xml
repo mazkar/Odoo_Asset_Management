@@ -113,7 +113,5 @@
         </field>
     </record>
 
-    <!-- Menu -->
-    <menuitem id="menu_asset_root" name="Asset Management"/>
-    <menuitem id="menu_asset_items" name="Asset Items" parent="menu_asset_root" action="action_x_asset_item"/>
+ 
 </odoo>
