@@ -1,5 +1,6 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
+from datetime import date
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -79,11 +80,12 @@ class AssetConditionMonth(models.Model):
 
     # === CREATE/WRITE ===
 
-    def write(self, vals):
-        return super().write(vals)
-
     @api.model
     def create(self, vals):
+        # Set default tanggal jika belum diisi
+        if not vals.get('tanggal'):
+            vals['tanggal'] = date.today()
+
         # Ambil semua item
         items = self.env['x_asset.item'].search([])
 
@@ -99,12 +101,17 @@ class AssetConditionMonth(models.Model):
         vals['line_ids'] = line_vals
 
         return super().create(vals)
-    
+
     @api.model
     def default_get(self, fields):
         defaults = super().default_get(fields)
-        items = self.env['x_asset.item'].search([])
 
+        # Set default tanggal jika termasuk dalam fields
+        if 'tanggal' in fields:
+            defaults.setdefault('tanggal', date.today())
+
+        # Tambahkan line items
+        items = self.env['x_asset.item'].search([])
         line_vals = []
         for item in items:
             if item:
@@ -118,6 +125,7 @@ class AssetConditionMonth(models.Model):
             defaults['line_ids'] = line_vals
 
         return defaults
+
     # === ACTIONS ===
 
     def action_submit(self):

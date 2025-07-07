@@ -45,7 +45,7 @@
 
         <sheet>
           <group>
-            <field name="tanggal"/>
+            <field name="tanggal"  required="1"/>
             <field name="bulan_tahun" readonly="1"/>
             <field name="inspect_by" readonly="1"/>
           </group>

@@ -17,7 +17,7 @@
         'data/module_category.xml',
         'data/approval_group_and_route.xml',
         'data/fix_warehouse.xml',
-        'security/asset_model_records.xml',
+        # 'security/asset_model_records.xml',
         'security/ir.model.access.csv',
         'data/override_stock_data.xml',
     ],
