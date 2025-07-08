@@ -17,11 +17,11 @@
                   class="btn-success"
                   modifiers="{'invisible': [['show_approve', '=', False]]}"/>
 
-          <button name="action_reject"
+          <!-- <button name="action_reject"
                   string="Reject"
                   type="object"
                   class="btn-danger"
-                  modifiers="{'invisible': [['show_reject', '=', False]]}"/>
+                  modifiers="{'invisible': [['show_reject', '=', False]]}"/> -->
 
           <field name="state" widget="statusbar"
                 statusbar_visible="draft,on_approval,approved,rejected"
@@ -33,7 +33,7 @@
            
           <group>
             <!-- <field name="tanggal"/> -->
-            <field name="state" invisible="1"/>
+            <field name="state" modifiers="{'invisible': true}"/>
              <field name="tanggal"  required="1"/>
             <field name="bulan_tahun" readonly="1"/>
             <field name="inspect_by" readonly="1"/>
@@ -46,7 +46,8 @@
             <page string="Detail Inspeksi">
            <field name="line_ids" options="{'reload_on_create': True}">
               <tree editable="bottom">
-                <field name="lokasi_nama" readonly="1"/>
+                <field name="item_id"/>
+                  <field name="lokasi_nama" readonly="1"/>
                 <field name="asset_id" string="Nama Barang" readonly="1"/>
                 <field name="kondisi_baik"/>
                 <field name="kondisi_rusak"/>

@@ -41,4 +41,10 @@ class AssetConditionMonthLine(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         return super().create(vals_list)
+    @api.onchange('item_id')
+    def _onchange_item_id(self):
+        for rec in self:
+            if rec.item_id:
+                rec.jumlah = rec.item_id.qty  # pastikan 'qty' adalah field jumlah aset
+
     

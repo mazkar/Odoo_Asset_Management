@@ -94,17 +94,20 @@ class AssetConditionMonth(models.Model):
     def action_submit(self):
         for rec in self:
             rec.inspect_by = self.env.user
-
             total = (rec.kondisi_baik or 0) + (rec.kondisi_rusak or 0)
-            if total == rec.jumlah:
-                rec.state = 'approved'
-                rec.message_post(body="✅ Jumlah kondisi sesuai. Status langsung disetujui.")
-            else:
+
+            if total != rec.jumlah:
                 rec.state = 'on_approval'
                 rec.current_approval_index = 0
                 rec.message_post(body="⚠️ Jumlah kondisi tidak sesuai. Diperlukan proses approval.")
+            # elif not rec.approver_user_ids:
+            #     rec.state = 'approved'
+            #     rec.message_post(body="✅ Jumlah kondisi sesuai dan tidak ada approver. Status langsung disetujui.")
+            else:
+                rec.state = 'on_approval'
+                rec.current_approval_index = 0
+                rec.message_post(body="⏳ Menunggu persetujuan dari approver.")
 
-        return
 
     @api.onchange('tanggal')
     def _onchange_generate_line_ids(self):
@@ -120,26 +123,32 @@ class AssetConditionMonth(models.Model):
             if lines:
                 self.line_ids = lines
 
+        
     def action_approve(self):
-            for rec in self:
-                if rec.state != 'on_approval':
-                    raise ValidationError("Record is not under approval.")
+        for rec in self:
+            if rec.state != 'on_approval':
+                raise ValidationError("Record is not under approval.")
 
-                user = self.env.user
-                if user in rec.approved_user_ids:
-                    raise ValidationError("You have already approved this record.")
+            user = self.env.user
+            if user in rec.approved_user_ids:
+                raise ValidationError("You have already approved this record.")
 
-                rec.approved_user_ids = [(4, user.id)]
-                rec.message_post(body=f"✅ {user.name} telah menyetujui.")
+            rec.approved_user_ids = [(4, user.id)]
+            rec.message_post(body=f"✅ {user.name} telah menyetujui.")
 
-                if set(rec.approver_user_ids.ids).issubset(set(rec.approved_user_ids.ids)):
-                    rec.state = 'approved'
-                    rec.message_post(body="✅ Semua approver telah menyetujui. Status: Approved.")
-                else:
-                    remaining = set(rec.approver_user_ids.ids) - set(rec.approved_user_ids.ids)
-                    remaining_users = self.env['res.users'].browse(list(remaining))
-                    names = ', '.join(remaining_users.mapped('name'))
-                    rec.message_post(body=f"⏳ Menunggu persetujuan dari: {names}")
+            # Pastikan semua approver sudah approve
+            approver_ids = set(rec.approver_user_ids.ids)
+            approved_ids = set(rec.approved_user_ids.ids)
+
+            if approver_ids and approver_ids.issubset(approved_ids):
+                rec.state = 'approved'
+                rec.message_post(body="✅ Semua approver telah menyetujui. Status: Approved.")
+            else:
+                remaining = approver_ids - approved_ids
+                names = ', '.join(self.env['res.users'].browse(list(remaining)).mapped('name'))
+                rec.message_post(body=f"⏳ Menunggu persetujuan dari: {names}")
+
+
 
     def action_reject(self):
             for rec in self:
@@ -161,3 +170,12 @@ class AssetConditionMonth(models.Model):
             vals['line_ids'] = lines
 
         return super().create(vals)
+    
+    @api.depends('approval_route_ids')
+    def _compute_approvers(self):
+        for rec in self:
+            users = self.env['res.users']
+            for line in rec.approval_route_ids:
+                group_users = self.env['res.users'].search([('groups_id', '=', line.group_id.id)])
+                users |= group_users
+            rec.approver_user_ids = [(6, 0, users.ids)]
