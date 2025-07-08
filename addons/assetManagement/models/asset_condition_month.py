@@ -179,3 +179,12 @@ class AssetConditionMonth(models.Model):
                 group_users = self.env['res.users'].search([('groups_id', '=', line.group_id.id)])
                 users |= group_users
             rec.approver_user_ids = [(6, 0, users.ids)]
+
+    display_name = fields.Char(compute='_compute_display_name', store=True)
+
+    @api.depends('tanggal')
+    def _compute_display_name(self):
+        for rec in self:
+            rec.display_name = f"Inspection - {rec.tanggal.strftime('%d/%m/%Y')}" if rec.tanggal else "Inspection"
+
+    _rec_name = 'display_name'

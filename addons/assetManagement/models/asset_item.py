@@ -11,7 +11,7 @@ class AssetItem(models.Model):
     location_id = fields.Many2one('stock.location', string="Lokasi", domain="[('usage','=','internal')]")
 
     condition_month_ids = fields.One2many(
-        'x_asset.condition.month.line',  # Ganti ke model detail
+        'x_asset.condition.month.line', 
         'item_id',
         string='Kondisi Bulanan'
     )
