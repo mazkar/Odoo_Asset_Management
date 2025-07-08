@@ -11,10 +11,5 @@
     </field>
   </record>
 
-  <!-- Menu -->
-  <menuitem id="menu_approval_route_root"
-            name="Approval Routes"
-            parent="asset_root_menu"
-            action="action_approval_route_line"
-            sequence="30"/>
+
 </odoo>

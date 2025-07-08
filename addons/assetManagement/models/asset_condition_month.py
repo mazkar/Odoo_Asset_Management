@@ -1,5 +1,5 @@
-from odoo import models, fields, api
-from odoo.exceptions import ValidationError
+from odoo import _,models, fields, api
+from odoo.exceptions import ValidationError, UserError
 from datetime import date
 import logging
 
@@ -31,7 +31,7 @@ class AssetConditionMonth(models.Model):
         ('draft', 'Draft'),
         ('on_approval', 'On Approval'),
         ('approved', 'Approved'),
-        ('rejected', 'Rejected')], string='Status', default='draft', tracking=True)
+       ], string='Status', default='draft', tracking=True)
 
     approver_user_ids = fields.Many2many(
         'res.users',
@@ -89,24 +89,31 @@ class AssetConditionMonth(models.Model):
 
         # === CREATE/WRITE ===
 
+    # def write(self, vals):
+    #     for rec in self:
+    #         print("rec.state:", rec.state)
+    #         if rec.state != 'draft':
+    #             raise UserError(_("Tidak bisa mengubah data jika bukan dalam status Draft."))
+    #     return super().write(vals)
+
     # === ACTIONS ===
 
     def action_submit(self):
         for rec in self:
             rec.inspect_by = self.env.user
-            total = (rec.kondisi_baik or 0) + (rec.kondisi_rusak or 0)
+            # total = (rec.kondisi_baik or 0) + (rec.kondisi_rusak or 0)
 
-            if total != rec.jumlah:
-                rec.state = 'on_approval'
-                rec.current_approval_index = 0
-                rec.message_post(body="⚠️ Jumlah kondisi tidak sesuai. Diperlukan proses approval.")
-            # elif not rec.approver_user_ids:
-            #     rec.state = 'approved'
-            #     rec.message_post(body="✅ Jumlah kondisi sesuai dan tidak ada approver. Status langsung disetujui.")
-            else:
-                rec.state = 'on_approval'
-                rec.current_approval_index = 0
-                rec.message_post(body="⏳ Menunggu persetujuan dari approver.")
+        # if rec.total != rec.jumlah:
+        #     rec.state = 'on_approval'
+        #     rec.current_approval_index = 0
+        #     rec.message_post(body="⚠️ Jumlah kondisi tidak sesuai. Diperlukan proses approval.")
+        # elif not rec.approver_user_ids:
+        #     rec.state = 'approved'
+        #     rec.message_post(body="✅ Jumlah kondisi sesuai dan tidak ada approver. Status langsung disetujui.")
+
+        rec.state = 'on_approval'
+        rec.current_approval_index = 0
+        rec.message_post(body="⏳ Menunggu persetujuan dari approver.")
 
 
     @api.onchange('tanggal')
@@ -118,7 +125,7 @@ class AssetConditionMonth(models.Model):
                 if item:
                     lines.append((0, 0, {
                         'item_id': item.id,
-                        'jumlah': item.onHandQuantity or 0,
+                        'jumlah': item.onHandQuantity,
                     }))
             if lines:
                 self.line_ids = lines
@@ -150,12 +157,7 @@ class AssetConditionMonth(models.Model):
 
 
 
-    def action_reject(self):
-            for rec in self:
-                if rec.state != 'on_approval':
-                    raise ValidationError("Record is not under approval.")
-                rec.state = 'rejected'
-                rec.message_post(body=f"❌ Ditolak oleh {self.env.user.name}")
+
 
     @api.model
     def create(self, vals):
@@ -165,7 +167,7 @@ class AssetConditionMonth(models.Model):
             for item in items:
                 lines.append((0, 0, {
                     'item_id': item.id,
-                    'jumlah': item.onHandQuantity or 0,
+                    'jumlah': item.onHandQuantity,
                 }))
             vals['line_ids'] = lines
 

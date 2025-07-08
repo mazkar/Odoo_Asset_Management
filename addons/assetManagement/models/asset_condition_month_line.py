@@ -6,7 +6,19 @@ class AssetConditionMonthLine(models.Model):
 
     condition_month_id = fields.Many2one('x_asset.condition.month', string='Parent')
     item_id = fields.Many2one('x_asset.item', string='Item Aset', required=True)
-    jumlah = fields.Integer(string='Jumlah')
+    jumlah = fields.Integer(
+        string='On Hand Quantity',
+        compute='_compute_on_hand_qty',
+        store=True,
+        readonly=True
+    )
+
+    @api.depends('item_id.onHandQuantity')
+    def _compute_on_hand_qty(self):
+        for rec in self:
+            rec.jumlah = rec.item_id.onHandQuantity if rec.item_id else 0
+
+
     month_id = fields.Many2one(
     'x_asset.condition.month',
     string='Form Induk',
@@ -36,15 +48,27 @@ class AssetConditionMonthLine(models.Model):
 )
     kondisi_baik = fields.Integer(string='Kondisi Baik')
     kondisi_rusak = fields.Integer(string='Kondisi Rusak')
+    note = fields.Char(string='Note')
+    total = fields.Integer(
+        string='Jumlah',
+        compute='_compute_jumlah',
+        store=True,
+        readonly=True
+    )
+
+    @api.depends('kondisi_baik', 'kondisi_rusak')
+    def _compute_jumlah(self):
+        for rec in self:
+            rec.total = (rec.kondisi_baik or 0) + (rec.kondisi_rusak or 0)
     keterangan = fields.Text(string='Keterangan')
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        return super().create(vals_list)
-    @api.onchange('item_id')
-    def _onchange_item_id(self):
-        for rec in self:
-            if rec.item_id:
-                rec.jumlah = rec.item_id.qty  # pastikan 'qty' adalah field jumlah aset
+    # @api.model_create_multi
+    # def create(self, vals_list):
+    #     return super().create(vals_list)
+    # @api.onchange('item_id')
+    # def _onchange_item_id(self):
+    #     for rec in self:
+    #         if rec.item_id:
+    #             rec.jumlah = rec.item_id.qty  # pastikan 'qty' adalah field jumlah aset
 
     

@@ -10,16 +10,25 @@ services:
       - ./addons:/mnt/extra-addons
       - ./var/lib/odoo:/var/lib/odoo
     depends_on:
-      - odoo-postgres
+      odoo-postgres:
+        condition: service_healthy
     networks:
       - odoo-network
+
   odoo-postgres:
     image: postgres:16.1
     env_file: .env
     volumes:
       - ./var/lib/postgresql/data/pgdata:/var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "odoo"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
     networks:
       - odoo-network
+
 networks:
   odoo-network:
     driver: bridge

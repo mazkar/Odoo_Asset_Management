@@ -32,15 +32,11 @@
                   class="btn-success"
                   modifiers="{'invisible': [['state', '!=', 'on_approval']]}"/>
 
-          <button name="action_reject"
-                  string="Reject"
-                  type="object"
-                  class="btn-danger"
-                  modifiers="{'invisible': [['state', '!=', 'on_approval']]}"/>
+    
 
           <field name="state" widget="statusbar"
-                statusbar_visible="draft,on_approval,approved,rejected"
-                statusbar_colors="{'draft':'blue','on_approval':'orange','approved':'green','rejected':'red'}"/>
+                statusbar_visible="draft,on_approval,approved"
+                statusbar_colors="{'draft':'blue','on_approval':'orange','approved':'green'}"/>
         </header>
 
         <sheet>

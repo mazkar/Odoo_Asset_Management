@@ -6,9 +6,9 @@
     'category': 'Assets',
     'depends': ['base','mail','stock'],
     'data': [
-        'views/asset_condition_month_views.xml',
+        # 'views/asset_condition_month_views.xml',
         'views/asset_condition_month_line_views.xml',
-        'views/asset_condition_month_done_views.xml',
+        # 'views/asset_condition_month_done_views.xml',
         'views/menu.xml',
         'views/asset_item_views.xml',
         'views/user_group_views.xml',
