@@ -14,7 +14,7 @@
 
   <!-- Approval Route Line: Step 1 -->
   <record id="approval_route_assets_step1" model="approval.route.line">
-    <field name="name">Step 1 - Assets Management</field>
+    <field name="name">Assets Management Approval</field>
     <field name="sequence">1</field>
     <field name="group_id" ref="assetManagement.group_assets_management"/>
   </record>

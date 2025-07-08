@@ -25,7 +25,11 @@ class AssetConditionMonth(models.Model):
     bulan_tahun = fields.Char(string='Bulan - Tahun', compute='_compute_bulan_tahun', store=True)
     inspect_by = fields.Many2one('res.users', string='Inspected By', readonly=True)
 
-    approval_route_ids = fields.Many2many('approval.route.line', string='Approval Routes')
+    approval_route_ids = fields.Many2many(
+        'approval.route.line',
+        string='Approval Routes',
+        default=lambda self: self.env.ref('module_name.approval_group_route_line_1').ids if self.env.ref('module_name.approval_group_route_line_1', raise_if_not_found=False) else []
+    )
     current_approval_index = fields.Integer(string='Current Approval Index', default=0)
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -134,16 +138,20 @@ class AssetConditionMonth(models.Model):
     def action_approve(self):
         for rec in self:
             if rec.state != 'on_approval':
-                raise ValidationError("Record is not under approval.")
+                raise ValidationError(_("Record is not under approval."))
 
             user = self.env.user
+
+            # ❗ Cek apakah user termasuk dalam approver_user_ids
+            if user.id not in rec.approver_user_ids.ids:
+                raise UserError(_("Anda tidak memiliki izin untuk menyetujui record ini."))
+
             if user in rec.approved_user_ids:
-                raise ValidationError("You have already approved this record.")
+                raise UserError(_("Anda sudah menyetujui record ini sebelumnya."))
 
             rec.approved_user_ids = [(4, user.id)]
             rec.message_post(body=f"✅ {user.name} telah menyetujui.")
 
-            # Pastikan semua approver sudah approve
             approver_ids = set(rec.approver_user_ids.ids)
             approved_ids = set(rec.approved_user_ids.ids)
 
@@ -158,21 +166,36 @@ class AssetConditionMonth(models.Model):
 
 
 
+    # @api.model
+    # def create(self, vals):
+    #     if not vals.get('line_ids'):
+    #         items = self.env['x_asset.item'].search([])
+    #         lines = []
+    #         for item in items:
+    #             lines.append((0, 0, {
+    #                 'item_id': item.id,
+    #                 'jumlah': item.onHandQuantity,
+    #             }))
+    #         vals['line_ids'] = lines
+
+    #     return super().create(vals)
+    
 
     @api.model
     def create(self, vals):
+        if not vals.get('approval_route_ids'):
+            default_route = self.env.ref('assetManagement.approval_route_assets_step1', raise_if_not_found=False)
+            if default_route:
+                vals['approval_route_ids'] = [(6, 0, [default_route.id])]
+
+        # Auto generate line_ids jika belum ada
         if not vals.get('line_ids'):
             items = self.env['x_asset.item'].search([])
-            lines = []
-            for item in items:
-                lines.append((0, 0, {
-                    'item_id': item.id,
-                    'jumlah': item.onHandQuantity,
-                }))
+            lines = [(0, 0, {'item_id': item.id, 'jumlah': item.onHandQuantity}) for item in items]
             vals['line_ids'] = lines
 
         return super().create(vals)
-    
+
     @api.depends('approval_route_ids')
     def _compute_approvers(self):
         for rec in self:

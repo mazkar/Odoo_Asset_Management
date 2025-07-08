@@ -8,3 +8,4 @@ class ApprovalRouteLine(models.Model):
     name = fields.Char(string="Name", required=True)
     group_id = fields.Many2one('res.groups', string="User Group", required=True)
     sequence = fields.Integer(string="Sequence", default=1)
+    
