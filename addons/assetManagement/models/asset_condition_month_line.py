@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, fields, api
 
 class AssetConditionMonthLine(models.Model):
     _name = 'x_asset.condition.month.line'
@@ -37,3 +37,8 @@ class AssetConditionMonthLine(models.Model):
     kondisi_baik = fields.Integer(string='Kondisi Baik')
     kondisi_rusak = fields.Integer(string='Kondisi Rusak')
     keterangan = fields.Text(string='Keterangan')
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        return super().create(vals_list)
+    
