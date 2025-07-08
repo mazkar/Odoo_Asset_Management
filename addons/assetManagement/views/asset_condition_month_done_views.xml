@@ -13,46 +13,7 @@
     </field>
   </record>
 
-  <!-- Form View: Inspection Done -->
-  <record id="view_x_asset_condition_month_done_form" model="ir.ui.view">
-    <field name="name">x_asset.condition.month.done.form</field>
-    <field name="model">x_asset.condition.month</field>
-    <field name="priority" eval="20"/>
-    <field name="arch" type="xml">
-      <form string="Inspection Done" edit="false" create="false" delete="false">
-        <sheet>
-          <group>
-            <field name="tanggal" readonly="1"/>
-            <field name="bulan_tahun" readonly="1"/>
-            <field name="inspect_by" readonly="1"/>
-          </group>
 
-          <notebook>
-            <page string="Detail Inspeksi">
-              <field name="line_ids">
-                <tree editable="false">
-                  <!-- <field name="lokasi_nama" readonly="1"/>
-                  <field name="asset_id" string="Nama Barang" readonly="1"/>
-                  <field name="kondisi_baik" readonly="1"/> -->
-                  <field name="kondisi_rusak" readonly="1"/>
-                  <field name="jumlah" readonly="1"/>
-                </tree>
-              </field>
-            </page>
-
-            <page string="Approval">
-              <group>
-                <field name="approval_route_ids" widget="many2many_tags" readonly="1"/>
-                <field name="approver_user_ids" widget="many2many_tags" readonly="1"/>
-                <field name="approved_user_ids" widget="many2many_tags" readonly="1"/>
-                <field name="state" widget="badge"/>
-              </group>
-            </page>
-          </notebook>
-        </sheet>
-      </form>
-    </field>
-  </record>
 
 
 </odoo>

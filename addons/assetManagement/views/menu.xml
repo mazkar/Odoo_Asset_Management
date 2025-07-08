@@ -12,6 +12,7 @@
     <field name="res_model">x_asset.condition.month</field>
     <field name="view_mode">tree,form</field>
     <field name="view_id" ref="view_x_asset_condition_month_tree"/>
+    <field name="domain">[('state', '!=', 'approved')]</field>
   </record>
 
   <!-- Approval Routes -->
@@ -27,8 +28,7 @@
     <field name="res_model">x_asset.condition.month</field>
     <field name="view_mode">tree,form</field>
     <field name="domain">[('state', '=', 'approved')]</field>
-    <field name="views" eval="[(ref('view_x_asset_condition_month_done_tree'), 'tree'),
-                                (ref('view_x_asset_condition_month_done_form'), 'form')]"/>
+  
   </record>
 
   <!-- Menus -->
