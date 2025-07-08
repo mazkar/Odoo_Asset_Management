@@ -12,7 +12,13 @@ class AssetConditionMonthLine(models.Model):
         store=True,
         readonly=True
     )
+    total_display = fields.Char(
+        string='Total',
+        compute='_compute_total_display',
+        store=False
+    )
 
+    note = fields.Char(string='Note')
     @api.depends('item_id.onHandQuantity')
     def _compute_on_hand_qty(self):
         for rec in self:
@@ -48,7 +54,6 @@ class AssetConditionMonthLine(models.Model):
 )
     kondisi_baik = fields.Integer(string='Kondisi Baik')
     kondisi_rusak = fields.Integer(string='Kondisi Rusak')
-    note = fields.Char(string='Note')
     total = fields.Integer(
         string='Jumlah',
         compute='_compute_jumlah',
@@ -62,6 +67,15 @@ class AssetConditionMonthLine(models.Model):
             rec.total = (rec.kondisi_baik or 0) + (rec.kondisi_rusak or 0)
     keterangan = fields.Text(string='Keterangan')
 
+
+    @api.depends('total', 'jumlah')
+    def _compute_total_display(self):
+        for rec in self:
+            if rec.total != rec.jumlah:
+                # Tambahkan simbol agar menonjol
+                rec.total_display = f"⚠ {rec.total}"
+            else:
+                rec.total_display = str(rec.total)
     # @api.model_create_multi
     # def create(self, vals_list):
     #     return super().create(vals_list)

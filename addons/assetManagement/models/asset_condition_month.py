@@ -17,7 +17,7 @@ class AssetConditionMonth(models.Model):
         string='Detail Inspeksi'
     )
 
-    tanggal = fields.Date(string='Tanggal', required=True)
+    tanggal = fields.Date(string='Tanggal', required=True, default=fields.Date.context_today)
     jumlah = fields.Integer(string='Jumlah', compute='_compute_total_kondisi', store=True)
     kondisi_baik = fields.Integer(string='Kondisi Baik', compute='_compute_total_kondisi', store=True)
     kondisi_rusak = fields.Integer(string='Kondisi Rusak', compute='_compute_total_kondisi', store=True)

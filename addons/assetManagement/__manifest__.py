@@ -14,7 +14,6 @@
         'views/approval_route_line_menu.xml',
         'data/approval_group_and_route.xml',
         'security/ir.model.access.csv',
-      
     ],
     'application': True,
 }

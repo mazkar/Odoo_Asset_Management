@@ -4,6 +4,7 @@ from odoo.exceptions import UserError
 class AssetItem(models.Model):
     _name = 'x_asset.item'
     _description = 'Item Aset'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Nama Aset')
     onHandQuantity = fields.Integer(string='On Hand Quantity', default=0)
