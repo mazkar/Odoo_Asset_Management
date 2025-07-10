@@ -116,6 +116,14 @@
             </p>
         </field>
     </record>
+    
+    <record id="action_asset_item_tree" model="ir.actions.act_window">
+        <field name="name">Asset Items</field>
+        <field name="res_model">x_asset.item</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
 
  
 </odoo>

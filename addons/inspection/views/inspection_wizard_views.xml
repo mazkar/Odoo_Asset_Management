@@ -1,0 +1,36 @@
+<odoo>
+    <data>
+        <record id="inspection_create_daily_wizard_form_view" model="ir.ui.view">
+            <field name="name">inspection.create.daily.wizard.form</field>
+            <field name="model">inspection.create.daily.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Create Daily Inspection">
+                    <p class="oe_grey">
+                        This wizard will create a new inspection record and automatically populate it
+                        with all active tasks. You can filter the tasks by specific locations.
+                    </p>
+                    <group>
+                        <group>
+                            <field name="inspector_id"/>
+                            <field name="inspection_date"/>
+                        </group>
+                        <group>
+                            <field name="filter_location_ids" widget="many2many_tags"
+                                options="{'no_create_edit': True}"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_create_inspection_record" string="Create Inspection" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="inspection_create_daily_wizard_action" model="ir.actions.act_window">
+            <field name="name">Create Daily Inspection</field>
+            <field name="res_model">inspection.create.daily.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field> </record>
+    </data>
+</odoo>

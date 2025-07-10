@@ -6,7 +6,6 @@
     <field name="view_mode">tree,form</field>
   </record>
 
-  <!-- Monthly Inspection (editable) -->
   <record id="action_x_asset_condition_month" model="ir.actions.act_window">
     <field name="name">Monthly Inspections</field>
     <field name="res_model">x_asset.condition.month</field>
@@ -15,38 +14,38 @@
     <field name="domain">[('state', '!=', 'approved')]</field>
   </record>
 
-  <!-- Approval Routes -->
   <record id="action_approval_route_line" model="ir.actions.act_window">
     <field name="name">Approval Routes</field>
     <field name="res_model">approval.route.line</field>
     <field name="view_mode">tree,form</field>
   </record>
 
-  <!-- Inspection Done (readonly, state=approved) -->
   <record id="action_x_asset_condition_month_done" model="ir.actions.act_window">
     <field name="name">Inspection Done</field>
     <field name="res_model">x_asset.condition.month</field>
     <field name="view_mode">tree,form</field>
     <field name="domain">[('state', '=', 'approved')]</field>
-  
   </record>
 
-  <!-- Menus -->
+  <record id="action_import_asset_item" model="ir.actions.act_window">
+    <field name="name">Import Asset Items</field>
+    <field name="res_model">asset.item.import.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="view_id" ref="view_asset_item_import_wizard_form"/>
+    <field name="target">new</field>
+  </record>
+
+  <!-- Menu Structure -->
   <menuitem id="asset_root_menu" name="Asset Management" sequence="10"/>
 
-  <menuitem id="asset_item_menu" name="Items"
-            parent="asset_root_menu"
-            action="action_x_asset_item" sequence="20"/>
+  <menuitem id="asset_item_menu" name="Items" parent="asset_root_menu" sequence="20"/>
+  <menuitem id="menu_asset_item_list" name="Asset Item List" parent="asset_item_menu" action="action_x_asset_item" sequence="21"/>
+  <menuitem id="menu_asset_item_import" name="Import Excel" parent="asset_item_menu" action="action_import_asset_item" sequence="22"/>
 
-  <menuitem id="asset_condition_menu" name="Monthly Inspections"
-            parent="asset_root_menu"
-            action="action_x_asset_condition_month" sequence="30"/>
+  <menuitem id="asset_condition_menu" name="Monthly Inspections" parent="asset_root_menu" action="action_x_asset_condition_month" sequence="30"/>
+  <menuitem id="menu_x_asset_condition_month_done" name="Inspection Report" parent="asset_root_menu" action="action_x_asset_condition_month_done" sequence="35"/>
+  <menuitem id="menu_approval_route_line" name="Approval Routes" parent="asset_root_menu" action="action_approval_route_line" sequence="40"/>
 
-  <menuitem id="menu_approval_route_line" name="Approval Routes"
-            parent="asset_root_menu"
-            action="action_approval_route_line" sequence="40"/>
-
-  <menuitem id="menu_x_asset_condition_month_done" name="Inspection Report"
-            parent="asset_root_menu"
-            action="action_x_asset_condition_month_done" sequence="50"/>
+  <menuitem id="menu_asset_setting_root" name="Settings" parent="asset_root_menu" sequence="50"/>
+  <menuitem id="menu_asset_user_group" name="User Group Settings" action="action_user_group_custom" parent="menu_asset_setting_root" sequence="10"/>
 </odoo>

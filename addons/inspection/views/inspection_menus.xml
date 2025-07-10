@@ -1,0 +1,36 @@
+<odoo>
+    <data>
+        <menuitem id="inspection_menu_root"
+                  name="Cleaning Inspection"
+                  sequence="100"/>
+
+        <menuitem id="inspection_daily_menu"
+                  name="Daily Inspections"
+                  parent="inspection_menu_root"
+                  action="inspection_record_model_action"
+                  sequence="10"/>
+
+        <menuitem id="menu_create_daily_inspection"
+                  name="Create Daily Inspection"
+                  parent="inspection_daily_menu"
+                  action="inspection_create_daily_wizard_action"
+                  sequence="10"/>
+
+        <menuitem id="menu_inspection_record_all"
+                  name="All Inspections"
+                  parent="inspection_daily_menu"
+                  action="inspection_record_model_action"
+                  sequence="20"/>
+
+        <menuitem id="inspection_configuration_menu"
+                  name="Configuration"
+                  parent="inspection_menu_root"
+                  sequence="100"/>
+
+        <menuitem id="menu_task_master"
+                  name="Inspection Tasks"
+                  parent="inspection_configuration_menu"
+                  action="task_master_model_action"
+                  sequence="10"/>
+    </data>
+</odoo>
