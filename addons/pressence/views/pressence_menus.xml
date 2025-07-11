@@ -1,5 +1,0 @@
-<odoo>
-  <menuitem id="menu_pressence_root" name="Reporting" sequence="10"/>
-  <menuitem id="menu_pressence_sub" name="Inspection" parent="menu_pressence_root" sequence="20"/>
-  <menuitem id="menu_pressence_item" name="Absensi OB" parent="menu_pressence_sub" action="action_pressence_item" sequence="30"/>
-</odoo>
