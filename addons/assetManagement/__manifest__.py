@@ -6,8 +6,8 @@
     'category': 'Assets',
     'depends': ['base','mail','stock'],
     'data': [
-        'views/asset_item_import_wizard.xml',             # VIEW Wizard-nya
-        'views/asset_item_views.xml',                     # Memakai action_import_asset_item
+        'views/asset_item_import_wizard.xml',       
+        'views/asset_item_views.xml',  
         'views/asset_condition_month_views.xml',
         'views/asset_condition_month_done_views.xml',
         'views/approval_route_line_menu.xml',
