@@ -11,6 +11,16 @@
         'views/inspection_menus.xml',
         'security/ir.model.access.csv',
     ],
+    # 'assets': {
+    #     'web.assets_backend': [
+    #         # Path ke file JavaScript kustom Anda
+    #         'inspection/static/src/js/field_binary_camera_image.js',
+    #         # Path ke file XML template QWeb kustom Anda
+    #         'inspection/static/src/xml/field_binary_camera_image.xml',
+    #         # Jika Anda punya CSS kustom, tambahkan di sini juga
+    #         # 'my_inspection_module/static/src/css/custom_styles.scss', 
+    #     ],
+    # },
     'application': True,
     'author': "A.M. Fathan",
     'license': 'AGPL-3',

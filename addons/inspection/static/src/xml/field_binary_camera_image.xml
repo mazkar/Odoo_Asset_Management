@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="FieldBinaryCameraImage" t-inherit="web.FieldBinaryImage" t-inherit-mode="extension">
+    </t>
+
+</templates>

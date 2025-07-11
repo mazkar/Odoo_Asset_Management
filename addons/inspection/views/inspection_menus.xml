@@ -1,23 +1,23 @@
 <odoo>
     <data>
         <menuitem id="inspection_menu_root"
-                  name="Cleaning Inspection"
+                  name="Inspeksi Kebersihan"
                   sequence="100"/>
 
         <menuitem id="inspection_daily_menu"
-                  name="Daily Inspections"
+                  name="Inspeksi Harian"
                   parent="inspection_menu_root"
                   action="inspection_record_model_action"
                   sequence="10"/>
 
         <menuitem id="menu_create_daily_inspection"
-                  name="Create Daily Inspection"
+                  name="Lakukan Inspeksi Harian"
                   parent="inspection_daily_menu"
                   action="inspection_create_daily_wizard_action"
                   sequence="10"/>
 
         <menuitem id="menu_inspection_record_all"
-                  name="All Inspections"
+                  name="Semua Rekaman Inspeksi"
                   parent="inspection_daily_menu"
                   action="inspection_record_model_action"
                   sequence="20"/>

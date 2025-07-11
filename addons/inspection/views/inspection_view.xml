@@ -32,8 +32,8 @@
                 <field name="name" string="No Inspeksi"/>
                 <field name="date"/>
                 <field name="inspector_id" string="inspeksi oleh"/>
-                <field name="start_inspection_date" string="Tanggal Mulai Inspeksi"/>
-                <field name="end_inspection_date" string="Tanggal Selesai Inspeksi"/>
+                <field name="start_inspection_date" string="Waktu Mulai"/>
+                <field name="end_inspection_date" string="Waktu Selesai"/>
                 <field name="acknowledged_by_id" string="Di Ketahui Oleh"/>
                 <field name="total_score" string="Total Skor"/>
                 <field name="notes" string="Catatan"/>
@@ -50,11 +50,11 @@
         <field name="arch" type="xml">
             <form string="Inspeksi Kebersihan">
                 <header>
-                    <button name="action_start_inspection" type="object" string="Mulai Inspeksi"
+                    <button name="action_start_inspection" type="object" string="Mulai Pekerjaan"
                             invisible="state != 'draft'" class="oe_highlight"/>
-                    <button name="action_complete_inspection" type="object" string="Selesaikan Inspeksi"
+                    <button name="action_complete_inspection" type="object" string="Selesaikan Pekerjaan"
                             invisible="state != 'in_progress'" class="oe_highlight"/>
-                    <button name="action_cancel_inspection" type="object" string="Batalkan Inspeksi"
+                    <button name="action_cancel_inspection" type="object" string="Batalkan Pekerjaan"
                             invisible="state in ('completed','canceled')"/>
 
                     <button name="action_acknowledge_inspection" type="object" string="Acknowledge" class="oe_highlight"
@@ -68,7 +68,7 @@
                             <field name="name"/>
                             <field name="date" readonly="state not in ['in_progress']"/>
                             <field name="cleaning_personnel_id" string="PIC Cleaning Service" readonly="state not in ['draft']"/>
-                            <field name="inspector_id" string="Inspeksi Oleh" readonly="state not in ['in_progress']"/>
+                            <field name="inspector_id" string="Inspeksi Oleh" readonly="state not in ['complete']"/>
                             <field name="acknowledged_by_id" />
                         </group>
                         <group>
@@ -89,7 +89,7 @@
                                     <field name="score"/>
                                     <field name="state"/>
                                     <field name="notes" readonly="state not in ['in_progress']"/>
-                                    <field name="image" readonly="state not in ['in_progress']" widget="image" options='{"thumbnail": true}' width="60" string=""/>                          
+                                    <field name="image" readonly="state not in ['in_progress']"  widget="image" options='{"thumbnail": true}' width="60" string=""/>                          
                                 </tree>
                             </field>
                         </page>

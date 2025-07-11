@@ -5,8 +5,14 @@ class CreateDailyInspectionWizard(models.TransientModel):
     _name = 'inspection.create.daily.wizard'
     _description = 'Wizard to Create Daily Inspection Record'
 
-    inspector_id = fields.Many2one('res.users', string='Inspector', default=lambda self: self.env.user, required=True)
-    inspection_date = fields.Datetime(string='Inspection Date', required=True, default=fields.Datetime.now)
+    cleaning_personnel_id = fields.Many2one(
+        'hr.employee',
+        string='PIC Cleaning Service',
+        domain="[('department_id.name', 'ilike', 'cleaning')]",
+        required=True,
+        default=lambda self: self._get_employee_cleaning_services()[0] if self._get_employee_cleaning_services() else False
+    )
+    cleaning_date = fields.Datetime(string='Cleaning Date', required=True, default=fields.Datetime.now)
     
     filter_location_ids = fields.Many2many('stock.warehouse', string='Lokasi Inspeksi',
                                            default=lambda self: self._get_default_all_locations(),
@@ -22,6 +28,15 @@ class CreateDailyInspectionWizard(models.TransientModel):
             return self.env['stock.warehouse'].search([]).ids # Mencari semua record dan mengambil list ID-nya
         return [] # Kembalikan list kosong jika model tidak ditemukan (misal modul stock belum terinstal)
 
+    def _get_employee_cleaning_services(self):
+        """
+        Returns the IDs of all stock.warehouse records to be pre-selected by default.
+        """
+        # Pastikan model 'stock.warehouse' tersedia (modul 'stock' harus terinstal)
+        if 'hr.employee' in self.env:
+            return self.env['hr.employee'].search([('department_id.name', 'ilike', 'cleaning')]).ids
+        return []
+
 
     def action_create_inspection_record(self):
         """
@@ -30,8 +45,8 @@ class CreateDailyInspectionWizard(models.TransientModel):
         self.ensure_one()
         
         inspection_record_vals = {
-            'date': self.inspection_date,
-            'inspector_id': self.inspector_id.id,
+            'date': self.cleaning_date,
+            'cleaning_personnel_id': self.cleaning_personnel_id.id,
             'state': 'draft',
         }
         new_inspection = self.env['inspection.record'].create(inspection_record_vals)
